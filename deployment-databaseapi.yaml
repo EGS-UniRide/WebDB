@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webdb-api
+  namespace: egs-uniride
+spec:
+  selector:
+    matchLabels:
+      app: webdb-api
+  template:
+    metadata:
+      labels:
+        app: webdb-api
+    spec:
+      containers:
+        - name: webdb-api
+          image: registry.deti:5000/egs-uniride/webdb-api:0004
+          ports:
+            - containerPort: 8050
+          volumeMounts:
+          - name: webdbapi-secret
+            mountPath: "/tmp/secrets"
+            readOnly: true
+      volumes:
+      - name: webdbapi-secret
+        secret:
+          secretName: webdbapi-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webdbapi-svc
+  namespace: egs-uniride
+spec:
+  ports:
+    - protocol: TCP
+      port: 8050
+      #nodePort: 32080
+      name: notapi-svc-port
+  selector:
+    app: webdb-api
+  #type: NodePort
+  type: ClusterIP

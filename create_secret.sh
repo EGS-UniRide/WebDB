@@ -1,0 +1,1 @@
+kubectl create secret generic webdbapi-secret --from-file=.env -n egs-uniride

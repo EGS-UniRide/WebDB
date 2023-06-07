@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  database_api:
+    image: database_api
+    container_name: database_api
+    build:
+      context: .
+      network: host
+      dockerfile: Dockerfile
+    ports:
+      - 8050:8050
+    depends_on:
+      - db
+    environment:
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - MONGO_DB=notifs
+    command: uvicorn main:app --host 0.0.0.0 --port 8050
+
+  db:
+    image: mongo:4.4
+    container_name: mongodb
+    ports:
+      - 27017:27017
